@@ -10,7 +10,7 @@
       <template v-for="(item, index) in data">
         <li @click.stop="() => to(item.book_id)">
           <img
-            v-lazy="`http://192.210.232.179:7777/juejin/${item.book_id}.png`"
+            v-lazy="`${baseURL}/images/${item.book_id}.png`"
             src="../assets/load2.png"
             alt=""
           />
@@ -56,7 +56,9 @@ import axios from 'axios';
 const startDate = +new Date();
 const data = ref();
 const code = ref();
-axios.get('http://192.210.232.179:7899/books').then((res) => {
+const baseURL = 'http://192.210.232.179:7899';
+// const baseURL = 'http://127.0.0.1:7899';
+axios.get(`${baseURL}/books`).then((res) => {
   data.value = res.data.data;
   code.value = res.data.code;
 });
@@ -66,11 +68,9 @@ function submit(book_id: any) {
   if (!phone?.trim()) {
     return;
   }
-  axios
-    .post('http://192.210.232.179:7899/submit', { book_id, phone })
-    .then((res) => {
-      alert('提交成功,请注意微信信息');
-    });
+  axios.post(`${baseURL}/submit`, { book_id, phone }).then((res) => {
+    alert('提交成功,请注意微信信息');
+  });
 }
 
 function to(id: any) {
@@ -104,21 +104,10 @@ const vLazy = {
 window.addEventListener('beforeunload', () => {
   const time = (+new Date() - startDate) / 1000;
   console.log(time);
-  fetch(`http://192.210.232.179:7899/leave?time=${time}`, {
+  fetch(`${baseURL}/leave?time=${time}`, {
     method: 'GET',
     keepalive: true,
   });
-});
-
-axios({
-  url: 'https://chaipip.com/aiwen.html',
-  method: 'get',
-  proxy: {
-    host: '125.46.83.162',
-    port: 63000,
-  },
-}).then((res) => {
-  console.log(res);
 });
 </script>
 
